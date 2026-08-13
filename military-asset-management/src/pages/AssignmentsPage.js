@@ -31,6 +31,7 @@ const AssignmentsPage = ({ apiBase, user }) => {
     reason: ''
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (activeTab === 'assignments') {
       fetchAssignments();

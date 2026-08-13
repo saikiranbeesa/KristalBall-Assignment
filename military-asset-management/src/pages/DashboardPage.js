@@ -17,6 +17,7 @@ const DashboardPage = ({ apiBase }) => {
 
   useEffect(() => {
     fetchMetrics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const fetchMetrics = async () => {

@@ -24,6 +24,7 @@ const TransfersPage = ({ apiBase, user }) => {
 
   useEffect(() => {
     fetchTransfers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const fetchTransfers = async () => {

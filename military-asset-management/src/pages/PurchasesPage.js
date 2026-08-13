@@ -23,6 +23,7 @@ const PurchasesPage = ({ apiBase, user }) => {
 
   useEffect(() => {
     fetchPurchases();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const fetchPurchases = async () => {
