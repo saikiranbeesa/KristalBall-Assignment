@@ -21,8 +21,9 @@ if (usePostgres) {
       callback = params;
       params = [];
     }
+    if (!callback) callback = () => {};
+    
     this.query(sql, params, (err, result) => {
-      if (err) return callback(err);
       callback(err, { lastID: result?.rows?.[0]?.id });
     });
   };
@@ -32,8 +33,9 @@ if (usePostgres) {
       callback = params;
       params = [];
     }
+    if (!callback) callback = () => {};
+    
     this.query(sql, params, (err, result) => {
-      if (err) return callback(err);
       callback(err, result?.rows?.[0]);
     });
   };
@@ -43,14 +45,15 @@ if (usePostgres) {
       callback = params;
       params = [];
     }
+    if (!callback) callback = () => {};
+    
     this.query(sql, params, (err, result) => {
-      if (err) return callback(err);
       callback(err, result?.rows);
     });
   };
 
   db.serialize = function(callback) {
-    callback();
+    if (callback) callback();
   };
 
 } else {
@@ -61,9 +64,6 @@ if (usePostgres) {
 }
 
 const initDatabase = () => {
-  if (usePostgres) {
-    console.log('Using PostgreSQL database');
-  }
   db.serialize(() => {
     // Users Table
     db.run(`
