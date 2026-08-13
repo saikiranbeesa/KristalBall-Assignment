@@ -1,10 +1,69 @@
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+require('dotenv').config();
 
-const dbPath = path.join(__dirname, 'military_assets.db');
-const db = new sqlite3.Database(dbPath);
+// Detect environment and select database
+const usePostgres = process.env.DATABASE_URL ? true : false;
+
+let db;
+
+if (usePostgres) {
+  // PostgreSQL for production (Render)
+  const { Pool } = require('pg');
+  
+  db = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  });
+
+  // Wrap pool methods to match sqlite3 API
+  db.run = function(sql, params, callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    this.query(sql, params, (err, result) => {
+      if (err) return callback(err);
+      callback(err, { lastID: result?.rows?.[0]?.id });
+    });
+  };
+
+  db.get = function(sql, params, callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    this.query(sql, params, (err, result) => {
+      if (err) return callback(err);
+      callback(err, result?.rows?.[0]);
+    });
+  };
+
+  db.all = function(sql, params, callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    this.query(sql, params, (err, result) => {
+      if (err) return callback(err);
+      callback(err, result?.rows);
+    });
+  };
+
+  db.serialize = function(callback) {
+    callback();
+  };
+
+} else {
+  // SQLite for local development
+  const sqlite3 = require('sqlite3').verbose();
+  const dbPath = path.join(__dirname, 'military_assets.db');
+  db = new sqlite3.Database(dbPath);
+}
 
 const initDatabase = () => {
+  if (usePostgres) {
+    console.log('Using PostgreSQL database');
+  }
   db.serialize(() => {
     // Users Table
     db.run(`
