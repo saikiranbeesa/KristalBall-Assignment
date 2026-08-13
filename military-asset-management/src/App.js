@@ -7,7 +7,7 @@ import PurchasesPage from './pages/PurchasesPage';
 import TransfersPage from './pages/TransfersPage';
 import AssignmentsPage from './pages/AssignmentsPage';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
