@@ -66,7 +66,7 @@ router.get('/', (req, res) => {
     `;
     let params = [];
 
-    if (userRole === 'Logistics Officer' || userRole === 'BaseCommander') {
+    if (userRole === 'LogisticsOfficer' || userRole === 'BaseCommander') {
       query += ' AND (t.from_base_id = ? OR t.to_base_id = ?)';
       params.push(userBaseId, userBaseId);
     }
